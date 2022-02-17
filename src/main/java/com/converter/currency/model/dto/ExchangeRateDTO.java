@@ -9,7 +9,4 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class ExchangeRateDTO {
 
-
-    String aa;
-    Integer a;
 }
