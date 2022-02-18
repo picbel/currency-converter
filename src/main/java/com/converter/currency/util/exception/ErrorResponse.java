@@ -16,4 +16,27 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(ErrorResponse.builder()
+                        .status(errorCode.getHttpStatus().value())
+                        .error(errorCode.getHttpStatus().name())
+                        .code(errorCode.name())
+                        .build()
+                );
+    }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode,String detail) {
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(ErrorResponse.builder()
+                                .status(errorCode.getHttpStatus().value())
+                                .error(errorCode.getHttpStatus().name())
+                                .code(errorCode.name())
+                                .message(detail)
+                                .build()
+                );
+    }
 }
