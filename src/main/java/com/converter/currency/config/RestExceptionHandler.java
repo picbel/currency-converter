@@ -18,6 +18,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {ApiException.class})
     protected ResponseEntity<ErrorResponse> businessExceptionHandler(BusinessException e) {
         log.error("BusinessException throw Exception : {}", e.getErrorCode());
-        return Objects.isNull(e.getDetail())? ErrorResponse.toResponseEntity(e.getErrorCode(),e.getDetail()) : ErrorResponse.toResponseEntity(e.getErrorCode());
+        return Objects.isNull(e.getDetail())? ErrorResponse.toResponseEntity(e.getErrorCode()) : ErrorResponse.toResponseEntity(e.getErrorCode(),e.getDetail());
     }
 }
