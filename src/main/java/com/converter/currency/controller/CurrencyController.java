@@ -16,9 +16,9 @@ public class CurrencyController {
 
     private final CurrencyService currencyService;
 
-    @GetMapping("")
-    public ResponseEntity<?> exchangeRateList(){
-        return new ResponseEntity<>(currencyService.exchangeRateList(), HttpStatus.OK);
+    @GetMapping("/list")
+    public ResponseEntity<?> exchangeRateList() throws Exception {
+        return new ResponseEntity<>(currencyService.getExchangeRateList(), HttpStatus.OK);
     }
 
 
