@@ -18,7 +18,7 @@ class CurrencyControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void errorCheck() throws Exception {
+    void getCurrency() throws Exception {
 
         mockMvc.perform(
                 get("/currency")
@@ -27,6 +27,5 @@ class CurrencyControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andReturn();
-
     }
 }

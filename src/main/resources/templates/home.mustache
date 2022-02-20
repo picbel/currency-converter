@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>환율 계산기</title>
+</head>
+<body>
+<div>
+    <form method="get">
+        <h1>환율 계산 </h1>
+        <br/>
+        <p>송금국가 : 미국(USD)</p>
+        <p>수취국가 :
+            <select id="receipt" onchange="changeLangSelect()">
+                <option>=선택하여주세요=</option>
+            </select>
+        </p>
+        <div>환율 : <p id="exchangeRate" style="display: inline;"></p></div>
+        <p>송금액 : <input type="number" id="inputUsd" min="0" max="10000" /> USD</p>
+        <button type="button" onclick="calculateCurrency()">submit</button>
+    </form>
+    <br/>
+    <div id="resultCurrency"></div>
+</div>
+
+</body>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+    let currencyList;
+
+    $(document).ready(function() {
+        $.ajax({
+            url: "http://localhost:8080/currency/list",
+            type: "GET",
+            dataType: "json",
+            success: function(data){
+                currencyList = data;
+                currencyList.forEach(function (value,index) {
+                    $('#receipt').append(`<option value="${value.code}">${value.name}</option>`)
+                    console.log(value);
+                });
+                console.log(data)
+            },
+            error: function (request, status, error){
+                console.log(error)
+            }
+        });
+    });
+
+
+    function changeLangSelect(){
+        let code = $('#receipt').val();
+
+        if (isEmpty(code)){
+            $('#exchangeRate').text('');
+        }else{
+            $('#exchangeRate').text(toNumberComma(findExchangeRate(code))+' '+nowCurrencyCode(code)+'/USD');
+        }
+    }
+    function nowCurrencyCode(code){
+        return code.substr(3);
+    }
+
+    function findExchangeRate(code){
+        for (let i = 0; i < currencyList.length; i++) {
+            if (currencyList[i].code === code){
+                return currencyList[i].exchangeRate;
+            }
+        }
+        return '';
+    }
+
+    function calculateCurrency(){
+        let code = $('#receipt').val();
+        let usd = $('#inputUsd').val();
+
+        if (isEmpty(code)){
+            alert("통화를 선택하여주세요.")
+            return false;
+        }
+        if (isEmpty(usd) || 1 > parseInt(usd)){
+            alert("USD는 0보다 큰 유효한 값을 입력하여주세요.")
+            return false;
+        }else if (parseInt(usd) > 10000){
+            alert("USD는 10000까지 입력할수 있습니다.")
+            return false;
+        }
+
+        let exchangeRate = findExchangeRate(code);
+        let html = `수취금액은 <p style="display: inline;">${toNumberComma(exchangeRate*usd)}</p> ${nowCurrencyCode(code)} 입니다.`;
+        $('#resultCurrency').html(html);
+    }
+
+    function isEmpty(value){
+        return value == undefined || value == '';
+    }
+
+    function nonEmpty(value){
+        return !isEmpty(value);
+    }
+
+    function toNumberComma(number){
+        return number.toLocaleString()
+    }
+
+
+
+
+
+</script>
+</html>
